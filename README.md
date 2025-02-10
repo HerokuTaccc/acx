@@ -41,7 +41,7 @@
    nano .env
    ```
    - Edit .env with your values.
-   - Press `I` button on keyboard to start editing.
+   - Start editing.
    - Press `Ctrl + X` then `Y` then `ENTER` once you are done with editing vars. to exit without saving Press `Ctrl + X` then `N` then `ENTER`
 9. **Installing tmux**
     ```bash
