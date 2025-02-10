@@ -1,3 +1,4 @@
+## 🍪 OPEN COOKIES FOLDER FOR MORE DETAILS ABOUT COOKIES.
 
 ## 🚀 Deploy on Heroku 
 [![Deploy](https://www.herokucdn.com/deploy/button.svg)](https://dashboard.heroku.com/new?template=https://github.com/HerokuTaccc/acx)
