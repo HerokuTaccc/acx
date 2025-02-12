@@ -81,7 +81,7 @@ async def run_both():
 if __name__ == "__main__":
     
  if psutil.virtual_memory().total < 2 * 1e9:
-    config.MAXRAM = int(psutil.virtual_memory().total * 0.8 / (1024 * 1024))
+    config.MAXRAM = int(psutil.virtual_memory().total * 0.5 / (1024 * 1024))
     loop = asyncio.get_event_loop()
     loop.run_until_complete(run_both())
  else:  
