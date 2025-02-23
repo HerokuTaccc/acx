@@ -1,4 +1,5 @@
 import asyncio
+import warnings
 import importlib
 
 from pyrogram import idle
