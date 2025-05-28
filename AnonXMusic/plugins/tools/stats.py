@@ -17,7 +17,10 @@ from AnonXMusic.utils.database import get_served_chats, get_served_users, get_su
 from AnonXMusic.utils.decorators.language import language, languageCB
 from AnonXMusic.utils.inline.stats import back_stats_buttons, stats_buttons
 from config import BANNED_USERS
-
+try:
+    config.STATS_VID_URL
+except Exception:
+    config.STATS_VID_URL = None
 
 @app.on_message(filters.command(["stats", "gstats"]) & filters.group & ~BANNED_USERS)
 @language
