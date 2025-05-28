@@ -8,6 +8,7 @@ from AnonXMusic import app
 from config import BANNED_USERS
 
 PHONE_REGEX = re.compile(r"^\+?\d{10,15}$")
+API_HASH_REGEX = re.compile(r"^[0-9a-fA-F]{32}$")
 
 
 @app.on_message(filters.command("gensession") & filters.private & ~BANNED_USERS)
@@ -39,18 +40,83 @@ async def generate_string_session(client: Client, message: Message):
         else:
             return await client.send_message(user_id, "Too many invalid attempts. Cancelled.", parse_mode=ParseMode.MARKDOWN)
 
+        # Ask for API ID
+        await client.send_message(
+            user_id,
+            "Please enter your **API ID** (a number) or type `exit` to cancel.\n\n"
+            "💡 You can get your API ID and API Hash from [my.telegram.org](https://my.telegram.org) under **API Development Tools**.",
+            parse_mode=ParseMode.MARKDOWN
+        )
+
+        for _ in range(3):
+            api_id_msg = await client.listen(chat_id=user_id, user_id=user_id, timeout=300)
+
+            if not api_id_msg.text:
+                await client.send_message(user_id, "Invalid input. Please send text.", parse_mode=ParseMode.MARKDOWN)
+                continue
+
+            api_id = api_id_msg.text.strip()
+            if api_id.lower() == "exit":
+                return await client.send_message(user_id, "Session generation cancelled.", parse_mode=ParseMode.MARKDOWN)
+
+            if api_id.isdigit():
+                api_id = int(api_id)
+                break
+
+            await client.send_message(user_id, "API ID must be numeric. Try again:", parse_mode=ParseMode.MARKDOWN)
+        else:
+            return await client.send_message(user_id, "Too many invalid attempts. Cancelled.", parse_mode=ParseMode.MARKDOWN)
+
+        # Ask for API HASH
+        await client.send_message(
+            user_id,
+            "Please enter your **API HASH** or type `exit` to cancel.\n\n"
+            "💡 You can get your API ID and API Hash from [my.telegram.org](https://my.telegram.org) under **API Development Tools**.",
+            parse_mode=ParseMode.MARKDOWN
+        )
+
+        for _ in range(3):
+            api_hash_msg = await client.listen(chat_id=user_id, user_id=user_id, timeout=300)
+
+            if not api_hash_msg.text:
+                await client.send_message(user_id, "Invalid input. Please send text.", parse_mode=ParseMode.MARKDOWN)
+                continue
+
+            api_hash = api_hash_msg.text.strip()
+            if api_hash.lower() == "exit":
+                return await client.send_message(user_id, "Session generation cancelled.", parse_mode=ParseMode.MARKDOWN)
+
+            if API_HASH_REGEX.match(api_hash):
+                break
+
+            await client.send_message(user_id, "API HASH must be exactly 32 hexadecimal characters. Try again:", parse_mode=ParseMode.MARKDOWN)
+        else:
+            return await client.send_message(user_id, "Too many invalid attempts. Cancelled.", parse_mode=ParseMode.MARKDOWN)
+
+        # Send code request
         await client.send_message(user_id, "Sending code request...", parse_mode=ParseMode.MARKDOWN)
 
-        temp_app = Client(
-            name="gen_session", api_id=app.api_id, api_hash=app.api_hash, in_memory=True
-        )
-        await temp_app.connect()
+        try:
+            temp_app = Client(
+                name="gen_session", api_id=api_id, api_hash=api_hash, in_memory=True
+            )
+            await temp_app.connect()
+        except Exception as e:
+            return await client.send_message(
+                user_id,
+                f"Failed to initialize client:\n`{e}`",
+                parse_mode=ParseMode.MARKDOWN
+            )
 
         try:
             code_info = await temp_app.send_code(phone_number)
         except Exception as e:
             await temp_app.disconnect()
-            return await client.send_message(user_id, f"Failed to send code:\n`{e}`", parse_mode=ParseMode.MARKDOWN)
+            return await client.send_message(
+                user_id,
+                f"Failed to send code:\n`{e}`",
+                parse_mode=ParseMode.MARKDOWN
+            )
 
         # Ask for OTP
         await client.send_message(
@@ -89,9 +155,13 @@ async def generate_string_session(client: Client, message: Message):
             except Exception:
                 hint = "Unable to retrieve password hint."
 
+            # Escape hint to avoid markdown issues
+            from pyrogram.helpers import escape_markdown
+            safe_hint = escape_markdown(hint)
+
             await client.send_message(
                 user_id,
-                f"2FA is enabled.\nPassword hint: `{hint}`\nEnter your **Telegram password** or type `exit` to cancel:",
+                f"2FA is enabled.\nPassword hint: `{safe_hint}`\nEnter your **Telegram password** or type `exit` to cancel:",
                 parse_mode=ParseMode.MARKDOWN
             )
 
@@ -111,17 +181,29 @@ async def generate_string_session(client: Client, message: Message):
                     await temp_app.check_password(password)
                     break
                 except Exception as e:
-                    await client.send_message(user_id, f"Incorrect password: `{e}`", parse_mode=ParseMode.MARKDOWN)
+                    await client.send_message(
+                        user_id,
+                        f"Incorrect password: `{e}`",
+                        parse_mode=ParseMode.MARKDOWN
+                    )
             else:
                 await temp_app.disconnect()
                 return await client.send_message(user_id, "Too many failed password attempts. Cancelled.", parse_mode=ParseMode.MARKDOWN)
         except Exception as e:
             await temp_app.disconnect()
-            return await client.send_message(user_id, f"Login failed:\n`{e}`", parse_mode=ParseMode.MARKDOWN)
+            return await client.send_message(
+                user_id,
+                f"Login failed:\n`{e}`",
+                parse_mode=ParseMode.MARKDOWN
+            )
 
         # Export string session
         string_session = await temp_app.export_session_string()
-        await temp_app.send_message("me", f"**Your Pyrogram String Session:**\n`{string_session}`", parse_mode=ParseMode.MARKDOWN)
+        await temp_app.send_message(
+            "me",
+            f"**Your Pyrogram String Session:**\n`{string_session}`",
+            parse_mode=ParseMode.MARKDOWN
+        )
         await client.send_message(
             user_id,
             f"**Your Pyrogram String Session:**\n`{string_session}`\n\nThis has also been sent to your Saved Messages.",
@@ -132,4 +214,8 @@ async def generate_string_session(client: Client, message: Message):
     except ListenerTimeout:
         await client.send_message(user_id, "Received no response. Exiting...", parse_mode=ParseMode.MARKDOWN)
     except Exception as e:
-        await client.send_message(user_id, f"An unexpected error occurred:\n`{e}`", parse_mode=ParseMode.MARKDOWN)
+        await client.send_message(
+            user_id,
+            f"An unexpected error occurred:\n`{e}`",
+            parse_mode=ParseMode.MARKDOWN
+        )
