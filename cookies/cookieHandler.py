@@ -144,7 +144,6 @@ async def setc(c, m: Message):
                     print("[CSM] ✅ Cookies are valid! Exiting setup mode.")
                     await app.send_message(LOGGER_ID, "✅ Cookies are valid and set successfully! Exiting Cookie Setup Mode.")
                     if app.loop.is_running():
-                        app.loop.stop()
                         raise KeyboardInterrupt
                     return  # Exit the function after setting valid cookies
                 else:
@@ -198,7 +197,6 @@ async def ignorec(c, m: Message):
     if setc_task and not setc_task.done():
         setc_task.cancel()
     if app.loop.is_running():
-        app.loop.stop()
         raise KeyboardInterrupt
 
 def loadCookie(cookiePath=cookiePath):
@@ -268,7 +266,6 @@ async def main():
 
     if areCookiesValid:
         if app.loop.is_running():
-            app.loop.stop()
             raise KeyboardInterrupt
         return
     try:
