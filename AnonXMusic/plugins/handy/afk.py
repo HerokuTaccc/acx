@@ -112,7 +112,7 @@ async def extract_media(c:Client,m:Message):
             except Exception as e: med = None; print(e)
             try:
                 sent:Message = (await (getattr(c,f"send_{mtype}",None))(LOGGER_ID,med))
-                        {'file_id': sent.photo.file_id,     'type': 'photo'     } if sent.photo     else \
+                media = {'file_id': sent.photo.file_id,     'type': 'photo'     } if sent.photo     else \
                         {'file_id': sent.video.file_id,     'type': 'video'     } if sent.video     else \
                         {'file_id': sent.animation.file_id, 'type': 'animation' } if sent.animation else \
                         {'file_id': sent.document.file_id,  'type': 'document'  } if sent.document  else \
