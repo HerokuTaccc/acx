@@ -9,7 +9,7 @@ from moviepy import VideoFileClip
 from tempfile import NamedTemporaryFile as ntf
 from AnonXMusic.core.mongo import mongodb
 from AnonXMusic import app
-
+from config import LOGGER_ID 
 
 
 # --- In-memory AFK cache ---
@@ -111,8 +111,8 @@ async def extract_media(c:Client,m:Message):
             try: med = await c.download_media(f_id,in_memory=True);med = await convert_(med,mtype)
             except Exception as e: med = None; print(e)
             try:
-                sent:Message = (await (getattr(c,f"send_{mtype}",None))(LOG_GROUP,med))
-                media = {'file_id': sent.photo.file_id,     'type': 'photo'     } if sent.photo     else \
+                sent:Message = (await (getattr(c,f"send_{mtype}",None))(LOGGER_ID,med))
+                        {'file_id': sent.photo.file_id,     'type': 'photo'     } if sent.photo     else \
                         {'file_id': sent.video.file_id,     'type': 'video'     } if sent.video     else \
                         {'file_id': sent.animation.file_id, 'type': 'animation' } if sent.animation else \
                         {'file_id': sent.document.file_id,  'type': 'document'  } if sent.document  else \
@@ -193,7 +193,7 @@ async def afk_command(_, message: Message):
 # --- Main AFK Checker ---
 @app.on_message(filters.all & ~filters.service & filters.group,2)
 async def afk_user_handler(_, message: Message):
-    if message.from_user.id == _.me.id:
+    if message.from_user and message.from_user.id == _.me.id:
         return
     
     user = getattr(message, "from_user", None)
