@@ -241,7 +241,7 @@ def checkCookie(cookiePath=cookiePath):
 
 async def main():
     """Starts the bot and checks initial cookie status."""
-    await app.start()
+    
     global areCookiesValid,cookiePath
     await asyncio.sleep(0.5)
     print('[CSM] 🏺 Entering Cookie Set Mode')
@@ -268,6 +268,8 @@ async def main():
         if app.loop.is_running():
             raise KeyboardInterrupt
         return
+
+    await app.start()
     try:
         v=await app.send_message(LOGGER_ID, "⚠️ Cookies aren't valid! Send or Reply /setc to set cookies.\nor to skip `/ignorec`")
         print("[CSM] ⚠️ Cookies aren't valid. Waiting for user to send `/setc` or Press `CTRL + C` to exit [`CSM`].")
