@@ -206,9 +206,12 @@ async def afk_user_handler(_, message: Message):
             await remove_afk(user.id)
             duration = get_afk_user_duration(afk_data["since"])
             duration_fmt = f"<code>{duration}</code>"
+            text = f"Welcome back, {user.mention}!"
+            if duration:
+                text += f" You were AFK for {duration_fmt}."
             await message.reply(
-                f"Welcome back, {user.mention}! {f"You were AFK for {duration_fmt}."}"
-            ) 
+                text
+            )
     
             # return
 
