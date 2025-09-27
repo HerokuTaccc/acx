@@ -1,18 +1,20 @@
+
 import asyncio
 import warnings
 import importlib
-
 from pyrogram import idle
 from pytgcalls.exceptions import NoActiveGroupCall
 
 import config
-from AnonXMusic import LOGGER, app, userbot
+from AnonXMusic import LOGGER, app, userbot, cookiePath
 from AnonXMusic.core.call import Anony
 from AnonXMusic.misc import sudo
 from AnonXMusic.plugins import ALL_MODULES
 from AnonXMusic.utils import monitor
 from AnonXMusic.utils.database import get_banned_users, get_gbanned
-from config import BANNED_USERS
+from config import BANNED_USERS, LOGGER_ID
+
+from AnonXMusic.utils.cookies import read_cookie, checkCookie, save_cookie
 
 
 async def init():
@@ -50,6 +52,14 @@ async def init():
         exit()
     except:
         pass
+
+    try:
+        if not checkCookie(cookiePath):
+            await read_cookie()
+            if not checkCookie(cookiePath):
+                await app.send_message(LOGGER_ID, 'Cookies are not valid if bot is not working properly use /setc')
+        else: await save_cookie(cookiePath)
+    except Exception: pass
     await Anony.decorators()
     LOGGER("AnonXMusic").info(
         "\x41\x6e\x6f\x6e\x58\x20\x4d\x75\x73\x69\x63\x20\x42\x6f\x74\x20\x53\x74\x61\x72\x74\x65\x64\x20\x53\x75\x63\x63\x65\x73\x73\x66\x75\x6c\x6c\x79\x2e\n\n\x44\x6f\x6e'\x74\x20\x66\x6f\x72\x67\x65\x74\x20\x74\x6f\x20\x76\x69\x73\x69\x74\x20\x40\x46\x61\x6c\x6c\x65\x6e\x41\x73\x73\x6f\x63\x69\x61\x74\x69\x6f\x6e"
