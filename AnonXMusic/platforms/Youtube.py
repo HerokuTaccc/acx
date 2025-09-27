@@ -6,14 +6,12 @@ import re
 from typing import Union
 
 import yt_dlp
-from cookies import *
 from pyrogram.enums import MessageEntityType
 from pyrogram.types import Message
 from youtubesearchpython.__future__ import VideosSearch
+import AnonXMusic
 from AnonXMusic.utils.database import is_on_off
 from AnonXMusic.utils.formatters import time_to_seconds
-# Check if the cookie file exists, set cookiePath or send a message and exit
-print('Path set :' , cookiePath , "\nareCookiesValid:" , areCookiesValid)
 
 
 
@@ -127,7 +125,7 @@ class YouTubeAPI:
         proc = await asyncio.create_subprocess_exec(
             "yt-dlp",
             "--cookies",
-            cookiePath,
+            AnonXMusic.cookiePath,
             "-g",
             "-f",
             "best[height<=?720][width<=?1280]",
@@ -147,7 +145,7 @@ class YouTubeAPI:
         if "&" in link:
             link = link.split("&")[0]
         playlist = await shell_cmd(
-            f"yt-dlp --cookies {cookiePath} -i --get-id --flat-playlist --playlist-end {limit} --skip-download {link}"
+            f"yt-dlp --cookies {AnonXMusic.cookiePath} -i --get-id --flat-playlist --playlist-end {limit} --skip-download {link}"
         )
         try:
             result = playlist.split("\n")
@@ -250,7 +248,7 @@ class YouTubeAPI:
 
         def audio_dl():
             ydl_optssx = {
-                "cookiefile":  cookiePath,
+                "cookiefile":  AnonXMusic.cookiePath,
                 "format": "bestaudio/best",
                 "outtmpl": "downloads/%(id)s.%(ext)s",
                 "geo_bypass": True,
@@ -268,7 +266,7 @@ class YouTubeAPI:
 
         def video_dl():
             ydl_optssx = {
-                "cookiefile":  cookiePath,
+                "cookiefile":  AnonXMusic.cookiePath,
                 "format": "(bestvideo[height<=?720][width<=?1280][ext=mp4])+(bestaudio[ext=m4a])",
                 "outtmpl": "downloads/%(id)s.%(ext)s",
                 "geo_bypass": True,
@@ -288,7 +286,7 @@ class YouTubeAPI:
             formats = f"{format_id}+140"
             fpath = f"downloads/{title}"
             ydl_optssx = {
-                "cookiefile":  cookiePath,
+                "cookiefile":  AnonXMusic.cookiePath,
                 "format": formats,
                 "outtmpl": fpath,
                 "geo_bypass": True,
@@ -304,7 +302,7 @@ class YouTubeAPI:
         def song_audio_dl():
             fpath = f"downloads/{title}.%(ext)s"
             ydl_optssx = {
-                "cookiefile":  cookiePath,
+                "cookiefile":  AnonXMusic.cookiePath,
                 "format": format_id,
                 "outtmpl": fpath,
                 "geo_bypass": True,
@@ -339,7 +337,7 @@ class YouTubeAPI:
                 proc = await asyncio.create_subprocess_exec(
                     "yt-dlp",
                     "--cookies",
-                    cookiePath,
+                    AnonXMusic.cookiePath,
                     "-g",
                     "-f",
                     "best[height<=?720][width<=?1280]",
