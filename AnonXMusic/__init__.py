@@ -24,3 +24,9 @@ Spotify = SpotifyAPI()
 Resso = RessoAPI()
 Telegram = TeleAPI()
 YouTube = YouTubeAPI()
+
+import os
+
+cookiePath = os.path.join(os.getcwd(), "cookies.txt")
+
+with open(cookiePath, 'a') as _:pass
