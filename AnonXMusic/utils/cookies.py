@@ -22,7 +22,8 @@ async def save_cookie(f):
 
 async def read_cookie():
     try:
-        p = os.path.join(os.getcwd(), "cookies.txt")
+        from AnonXMusic import cookiePath
+        p = cookiePath
         doc = await mongodb.cookie.find_one({"f_id": 1})
         if doc and "f_content" in doc:
             with open(p, "wb") as f:

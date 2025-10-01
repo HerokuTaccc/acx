@@ -13,7 +13,7 @@ import config
 from ..logging import LOGGER
 
 cwd = os.getcwd()
-IGNORED_FILES = [f"{cwd}/cookies/cookies.txt", f"{cwd}/config.py"]
+IGNORED_FILES = [f"{cwd}/cookies.txt", f"{cwd}/config.py"]
 
 
 def install_req(cmd: str) -> Tuple[str, str, int, int]:
@@ -78,9 +78,9 @@ def git():
 
             nrs.pull(config.UPSTREAM_BRANCH)
 
-        except GitCommandError:
+        except GitCommandError as e:
+            LOGGER(__name__).error(f'Failed to initialize git repository: {e}')
             repo.git.reset("--hard", "FETCH_HEAD")
-
         finally:
             
             for file in IGNORED_FILES:
