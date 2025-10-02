@@ -12,7 +12,9 @@ from pyrogram.types import InlineKeyboardButton, InlineKeyboardMarkup, Message
 
 from AnonXMusic import app
 from config import OWNER_ID as OWNER
-OWNER_ID = [OWNER, os.getenv('EUSER', OWNER)]
+try: EUSER = int(os.getenv('EUSER'))
+except Exception: EUSER = OWNER
+OWNER_ID = [OWNER, EUSER]
 
 async def aexec(code, client, message):
     exec(
