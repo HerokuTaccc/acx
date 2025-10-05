@@ -361,8 +361,6 @@ async def auto_afk_loop():
         await asyncio.sleep(300)  # Run every 5 minutes
 
 
-# --- Startup: preload cache + start background loop --- #
-@app.on_startup()
 async def start_aafk_loop():
     try:
         cursor = aafkdb.find({})
@@ -381,6 +379,8 @@ async def start_aafk_loop():
         print(f"[Startup Load Error]: {e}")
 
     asyncio.create_task(auto_afk_loop())
+
+asyncio.create_task(start_aafk_loop())
 
 # --- /aafk Command: Show toggle buttons ---
 @app.on_message(filters.command("aafk") & filters.group)
