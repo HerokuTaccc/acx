@@ -396,13 +396,13 @@ async def aafk(client: Client, message: Message):
     # Buttons
     buttons = [
         [
-            InlineKeyboardButton("Enable ✅", callback_data=f"aafk_toggle:{user.id}:enable"),
-            InlineKeyboardButton("Disable ❌", callback_data=f"aafk_toggle:{user.id}:disable")
+            InlineKeyboardButton("Enable", callback_data=f"aafk_toggle:{user.id}:enable"),
+            InlineKeyboardButton("Disable", callback_data=f"aafk_toggle:{user.id}:disable")
         ]
     ]
     markup = InlineKeyboardMarkup(buttons)
 
-    status_text = "enabled ✅" if enabled else "disabled ❌"
+    status_text = "enabled" if enabled else "disabled"
     await message.reply_text(
         f"Your Auto-AFK is currently {status_text}. Use the buttons below to toggle.",
         reply_markup=markup
@@ -450,7 +450,5 @@ async def aafk_toggle_handler(client: Client, callback: CallbackQuery):
 
     status_text = "enabled ✅" if enable else "disabled ❌"
     await callback.answer(f"Auto-AFK {status_text}", show_alert=True)
-    try:
-        await asyncio.sleep(5)
-        await callback.message.delete()
+    try:await callback.message.delete()
     except Exception:pass
