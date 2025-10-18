@@ -156,7 +156,7 @@ async def generate_string_session(client: Client, message: Message):
                 hint = "Unable to retrieve password hint."
 
             # Escape hint to avoid markdown issues
-            from pyrogram.helpers import escape_markdown
+            escape_markdown = lambda text: re.sub(r"([\\_*[\]()~`>#+\-=|{}.!])", r"\\\1", text) if isinstance(text, str) and text else "None"
             safe_hint = escape_markdown(hint)
 
             await client.send_message(
