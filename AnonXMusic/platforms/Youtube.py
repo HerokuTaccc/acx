@@ -144,17 +144,24 @@ class YouTubeAPI:
             link = self.listbase + link
         if "&" in link:
             link = link.split("&")[0]
-        playlist = await shell_cmd(
-            f"yt-dlp --cookies {AnonXMusic.cookiePath} -i --get-id --flat-playlist --playlist-end {limit} --skip-download {link}"
-        )
-        try:
-            result = playlist.split("\n")
-            for key in result:
-                if key == "":
-                    result.remove(key)
-        except:
-            result = []
-        return result
+            
+        ydl_opts = {
+            "cookiefile":  AnonXMusic.cookiePath,
+            "flat_playlist": True,
+            "skip_download": True,
+            "playlist_end": limit,
+            "quiet": True,
+            "no_warnings": True,
+        }
+        def get_playlist_ids():
+            with yt_dlp.YoutubeDL(ydl_opts) as ydl:
+                info = ydl.extract_info(link, download=False)
+                ids = [e["id"] for e in info.get("entries", []) if e.get("id")]
+                return ids
+        try: return await asyncio.get_event_loop().run_in_executor(None, get_playlist_ids)
+        except: return []
+        
+        
 
     async def track(self, link: str, videoid: Union[bool, str] = None):
         if videoid:
