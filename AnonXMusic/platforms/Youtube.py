@@ -341,23 +341,28 @@ class YouTubeAPI:
                 direct = True
                 downloaded_file = await loop.run_in_executor(None, video_dl)
             else:
-                proc = await asyncio.create_subprocess_exec(
-                    "yt-dlp",
-                    "--cookies",
-                    AnonXMusic.cookiePath,
-                    "-g",
-                    "-f",
-                    "best[height<=?720][width<=?1280]",
-                    f"{link}",
-                    stdout=asyncio.subprocess.PIPE,
-                    stderr=asyncio.subprocess.PIPE,
-                )
-                stdout, stderr = await proc.communicate()
-                if stdout:
-                    downloaded_file = stdout.decode().split("\n")[0]
+                ydl_opts = {
+                    "cookiefile": AnonXMusic.cookiePath,
+                    "format": "best[height<=?720][width<=?1280]",
+                    "quiet": True,
+                    "no_warnings": True,
+                    "skip_download": True,
+                }
+
+                def direct_link():
+                    with yt_dlp.YoutubeDL(ydl_opts) as ydl:
+                        info = ydl.extract_info(link, download=False)
+                        return info.get("url")
+
+                try:
+                    downloaded_file = await asyncio.get_event_loop().run_in_executor(
+                        None,
+                        direct_link,
+                    )
                     direct = None
-                else:
-                    return
+                except Exception:
+                    return 
+                    
         else:
             direct = True
             downloaded_file = await loop.run_in_executor(None, audio_dl)
