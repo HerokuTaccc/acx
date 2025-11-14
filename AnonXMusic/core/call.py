@@ -188,14 +188,14 @@ class Call(PyTgCalls):
         stream = (
             MediaStream(
                 out,
-                audio_parameters=AudioQuality.HIGH,
+                audio_parameters=AudioQuality.STUDIO,
                 video_parameters=VideoQuality.HD_720p,
                 additional_ffmpeg_parameters=f"-ss {played} -to {duration}",
             )
             if playing[0]["streamtype"] == "video"
             else MediaStream(
                 out,
-                audio_parameters=AudioQuality.HIGH,
+                audio_parameters=AudioQuality.STUDIO,
                 video_flags=MediaStream.Flags.IGNORE,
                 additional_ffmpeg_parameters=f"-ss {played} -to {duration}",
             )
@@ -240,11 +240,11 @@ class Call(PyTgCalls):
         if video:
             stream = MediaStream(
                 link,
-                audio_parameters=AudioQuality.HIGH,
+                audio_parameters=AudioQuality.STUDIO,
                 video_parameters=VideoQuality.HD_720p,
             )
         else:
-            stream = MediaStream(link, audio_parameters=AudioQuality.HIGH, video_flags=MediaStream.Flags.IGNORE)
+            stream = MediaStream(link, audio_parameters=AudioQuality.STUDIO, video_flags=MediaStream.Flags.IGNORE)
         
         await assistant.play(
             chat_id,
@@ -256,14 +256,14 @@ class Call(PyTgCalls):
         stream = (
             MediaStream(
                 file_path,
-                audio_parameters=AudioQuality.HIGH,
+                audio_parameters=AudioQuality.STUDIO,
                 video_parameters=VideoQuality.HD_720p,
                 additional_ffmpeg_parameters=f"-ss {to_seek} -to {duration}",
             )
             if mode == "video"
             else MediaStream(
                 file_path,
-                audio_parameters=AudioQuality.HIGH,
+                audio_parameters=AudioQuality.STUDIO,
                 video_flags=MediaStream.Flags.IGNORE,
                 additional_ffmpeg_parameters=f"-ss {to_seek} -to {duration}",
             )
@@ -294,18 +294,18 @@ class Call(PyTgCalls):
         if video:
             stream = MediaStream(
                 link,
-                audio_parameters=AudioQuality.HIGH,
+                audio_parameters=AudioQuality.STUDIO,
                 video_parameters=VideoQuality.HD_720p,
             )
         else:
             stream = (
                 MediaStream(
                     link,
-                    audio_parameters=AudioQuality.HIGH,
+                    audio_parameters=AudioQuality.STUDIO,
                     video_parameters=VideoQuality.HD_720p,
                 )
                 if video
-                else MediaStream(link, audio_parameters=AudioQuality.HIGH, video_flags=MediaStream.Flags.IGNORE)
+                else MediaStream(link, audio_parameters=AudioQuality.STUDIO, video_flags=MediaStream.Flags.IGNORE)
             )
         try:
             assistant: PyTgCalls
@@ -374,13 +374,13 @@ class Call(PyTgCalls):
                 if video:
                     stream = MediaStream(
                         link,
-                        audio_parameters=AudioQuality.HIGH,
+                        audio_parameters=AudioQuality.STUDIO,
                         video_parameters=VideoQuality.HD_720p,
                     )
                 else:
                     stream = MediaStream(
                         link,
-                        audio_parameters=AudioQuality.HIGH,
+                        audio_parameters=AudioQuality.STUDIO,
                         video_flags=MediaStream.Flags.IGNORE
                     )
                 try:
@@ -421,13 +421,13 @@ class Call(PyTgCalls):
                 if video:
                     stream = MediaStream(
                         file_path,
-                        audio_parameters=AudioQuality.HIGH,
+                        audio_parameters=AudioQuality.STUDIO,
                         video_parameters=VideoQuality.HD_720p,
                     )
                 else:
                     stream = MediaStream(
                         file_path,
-                        audio_parameters=AudioQuality.HIGH,
+                        audio_parameters=AudioQuality.STUDIO,
                     )
                 try:
                     await client.change_stream(chat_id, stream)
@@ -456,11 +456,11 @@ class Call(PyTgCalls):
                 stream = (
                     MediaStream(
                         videoid,
-                        audio_parameters=AudioQuality.HIGH,
+                        audio_parameters=AudioQuality.STUDIO,
                         video_parameters=VideoQuality.HD_720p,
                     )
                     if str(streamtype) == "video"
-                    else MediaStream(videoid, audio_parameters=AudioQuality.HIGH, video_flags=MediaStream.Flags.IGNORE)
+                    else MediaStream(videoid, audio_parameters=AudioQuality.STUDIO, video_flags=MediaStream.Flags.IGNORE)
                 )
                 try:
                     await client.change_stream(chat_id, stream)
@@ -482,13 +482,13 @@ class Call(PyTgCalls):
                 if video:
                     stream = MediaStream(
                         queued,
-                        audio_parameters=AudioQuality.HIGH,
+                        audio_parameters=AudioQuality.STUDIO,
                         video_parameters=VideoQuality.HD_720p,
                     )
                 else:
                     stream = MediaStream(
                         queued,
-                        audio_parameters=AudioQuality.HIGH,
+                        audio_parameters=AudioQuality.STUDIO,
                         video_flags=MediaStream.Flags.IGNORE
                     )
                 try:
