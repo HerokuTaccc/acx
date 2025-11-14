@@ -2,7 +2,7 @@ import re
 
 import spotipy
 from spotipy.oauth2 import SpotifyClientCredentials
-from youtubesearchpython.__future__ import VideosSearch
+from AnonXMusic.utils import AsyncVideosSearch
 
 import config
 
@@ -35,8 +35,8 @@ class SpotifyAPI:
             fetched = f' {artist["name"]}'
             if "Various Artists" not in fetched:
                 info += fetched
-        results = VideosSearch(info, limit=1)
-        for result in (await results.next())["result"]:
+        results = await AsyncVideosSearch(info, limit=1)
+        for result in results:
             ytlink = result["link"]
             title = result["title"]
             vidid = result["id"]

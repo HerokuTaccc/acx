@@ -3,7 +3,7 @@ import time
 from pyrogram import filters
 from pyrogram.enums import ChatType
 from pyrogram.types import InlineKeyboardButton, InlineKeyboardMarkup, Message
-from youtubesearchpython.__future__ import VideosSearch
+from AnonXMusic.utils import AsyncVideosSearch
 
 import config
 from AnonXMusic import app
@@ -60,8 +60,8 @@ async def start_pm(client, message: Message, _):
             m = await message.reply_text("🔎")
             query = (str(name)).replace("info_", "", 1)
             query = f"https://www.youtube.com/watch?v={query}"
-            results = VideosSearch(query, limit=1)
-            for result in (await results.next())["result"]:
+            results = await AsyncVideosSearch(query, limit=1)
+            for result in results:
                 title = result["title"]
                 duration = result["duration"]
                 views = result["viewCount"]["short"]

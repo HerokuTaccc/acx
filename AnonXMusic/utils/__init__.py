@@ -1,4 +1,5 @@
-from .autorestart import monitor
+from .autorestart import *
+from .videosearch import *
 from .channelplay import *
 from .database import *
 from .decorators import *

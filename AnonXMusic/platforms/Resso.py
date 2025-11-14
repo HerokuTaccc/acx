@@ -3,7 +3,8 @@ from typing import Union
 
 import aiohttp
 from bs4 import BeautifulSoup
-from youtubesearchpython.__future__ import VideosSearch
+
+from AnonXMusic.utils import AsyncVideosSearch
 
 
 class RessoAPI:
@@ -37,8 +38,8 @@ class RessoAPI:
                     pass
         if des == "":
             return
-        results = VideosSearch(title, limit=1)
-        for result in (await results.next())["result"]:
+        results = await AsyncVideosSearch(title, limit=1)
+        for result in results:
             title = result["title"]
             ytlink = result["link"]
             vidid = result["id"]

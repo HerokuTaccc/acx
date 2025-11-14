@@ -6,10 +6,9 @@ from pyrogram import Client, filters
 from pyrogram.types import InlineKeyboardMarkup, InlineKeyboardButton, CallbackQuery, Message
 from pyrogram.enums import ChatAction, ChatType
 
-from youtubesearchpython import VideosSearch
 import yt_dlp
 from AnonXMusic import app
-
+from AnonXMusic.utils import AsyncVideosSearch
 
 # Command: /download <song name>
 @app.on_message(filters.command(["download"]))
@@ -18,7 +17,7 @@ async def search_song(client: Client, message: Message):
         return await message.reply_text("❌ Please provide a song name to search.")
 
     query = message.text.partition(' ')[2] if message.text else ''
-    results = VideosSearch(query, limit=5).result()["result"]
+    results = await AsyncVideosSearch(query, limit=5)
 
     if not results:
         return await message.reply_text("❌ No results found.")

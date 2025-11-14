@@ -3,7 +3,7 @@ from pyrogram.types import (
     InlineKeyboardMarkup,
     InlineQueryResultPhoto,
 )
-from youtubesearchpython.__future__ import VideosSearch
+from AnonXMusic.utils import AsyncVideosSearch
 
 from AnonXMusic import app
 from AnonXMusic.utils.inlinequery import answer
@@ -20,8 +20,8 @@ async def inline_query_handler(client, query):
         except:
             return
     else:
-        a = VideosSearch(text, limit=20)
-        result = (await a.next()).get("result")
+        result = await AsyncVideosSearch(text, limit=20)
+        
         for x in range(15):
             title = (result[x]["title"]).title()
             duration = result[x]["duration"]

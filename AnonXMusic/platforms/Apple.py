@@ -3,7 +3,7 @@ from typing import Union
 
 import aiohttp
 from bs4 import BeautifulSoup
-from youtubesearchpython.__future__ import VideosSearch
+from AnonXMusic.utils import AsyncVideosSearch
 
 
 class AppleAPI:
@@ -32,8 +32,8 @@ class AppleAPI:
                 search = tag.get("content", None)
         if search is None:
             return False
-        results = VideosSearch(search, limit=1)
-        for result in (await results.next())["result"]:
+        results = await AsyncVideosSearch(search, limit=1)
+        for result in results:
             title = result["title"]
             ytlink = result["link"]
             vidid = result["id"]

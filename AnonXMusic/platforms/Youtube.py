@@ -8,7 +8,7 @@ from typing import Union
 import yt_dlp
 from pyrogram.enums import MessageEntityType
 from pyrogram.types import Message
-from youtubesearchpython.__future__ import VideosSearch
+from AnonXMusic.utils import AsyncVideosSearch
 import AnonXMusic
 from AnonXMusic.utils.database import is_on_off
 from AnonXMusic.utils.formatters import time_to_seconds
@@ -75,8 +75,8 @@ class YouTubeAPI:
             link = self.base + link
         if "&" in link:
             link = link.split("&")[0]
-        results = VideosSearch(link, limit=1)
-        for result in (await results.next())["result"]:
+        results = await AsyncVideosSearch(link, limit=1)
+        for result in results:
             title = result["title"]
             duration_min = result["duration"]
             thumbnail = result["thumbnails"][0]["url"].split("?")[0]
@@ -92,8 +92,8 @@ class YouTubeAPI:
             link = self.base + link
         if "&" in link:
             link = link.split("&")[0]
-        results = VideosSearch(link, limit=1)
-        for result in (await results.next())["result"]:
+        results = await AsyncVideosSearch(link, limit=1)
+        for result in results:
             title = result["title"]
         return title
 
@@ -102,8 +102,8 @@ class YouTubeAPI:
             link = self.base + link
         if "&" in link:
             link = link.split("&")[0]
-        results = VideosSearch(link, limit=1)
-        for result in (await results.next())["result"]:
+        results = await AsyncVideosSearch(link, limit=1)
+        for result in results:
             duration = result["duration"]
         return duration
 
@@ -112,8 +112,8 @@ class YouTubeAPI:
             link = self.base + link
         if "&" in link:
             link = link.split("&")[0]
-        results = VideosSearch(link, limit=1)
-        for result in (await results.next())["result"]:
+        results = await AsyncVideosSearch(link, limit=1)
+        for result in results:
             thumbnail = result["thumbnails"][0]["url"].split("?")[0]
         return thumbnail
 
@@ -168,8 +168,8 @@ class YouTubeAPI:
             link = self.base + link
         if "&" in link:
             link = link.split("&")[0]
-        results = VideosSearch(link, limit=1)
-        for result in (await results.next())["result"]:
+        results = await AsyncVideosSearch(link, limit=1)
+        for result in results:
             title = result["title"]
             duration_min = result["duration"]
             vidid = result["id"]
@@ -230,8 +230,7 @@ class YouTubeAPI:
             link = self.base + link
         if "&" in link:
             link = link.split("&")[0]
-        a = VideosSearch(link, limit=10)
-        result = (await a.next()).get("result")
+        result = await AsyncVideosSearch(link, limit=10)
         title = result[query_type]["title"]
         duration_min = result[query_type]["duration"]
         vidid = result[query_type]["id"]
